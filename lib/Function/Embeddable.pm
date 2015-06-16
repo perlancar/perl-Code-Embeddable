@@ -9,7 +9,7 @@ use warnings;
 
 # BEGIN_BLOCK: import
 sub import {
-    no strict 'vars';
+    no strict 'refs';
     my $pkg = shift;
     my $caller = caller;
     my @imp = @_ ? @_ : @{__PACKAGE__.'::EXPORT'};
