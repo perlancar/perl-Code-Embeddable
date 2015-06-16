@@ -46,6 +46,9 @@ In F<lib/Your/Module.pm> (that wants to embed one or more functions):
 
 =head2 import
 
+A lightweight L<Exporter>-style exporter. Supports C<@EXPORT> and C<@EXPORT_OK>.
+No support for tags.
+
 
 =head1 SEE ALSO
 
