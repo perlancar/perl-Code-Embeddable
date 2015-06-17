@@ -1,5 +1,10 @@
 Revision history for Function-Embeddable
 
+0.02    2015-06-17 (PERLANCAR)
+
+	- Add functions: uniq, shuffle, pick, pick_n.
+
+
 0.01    2015-06-17 (PERLANCAR)
 
         - First release.
