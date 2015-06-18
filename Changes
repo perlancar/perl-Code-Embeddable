@@ -1,5 +1,12 @@
 Revision history for Code-Embeddable
 
+0.04    2015-06-18 (PERLANCAR)
+
+	- No functional changes.
+
+	- Add tests for import & stacktrace_printer.
+
+
 0.03    2015-06-18 (PERLANCAR)
 
         - Rename module/dist from Function-Embeddable to Code-Embeddable.
