@@ -71,13 +71,33 @@ my %OLD_SIG;
 BEGIN {
     @OLD_SIG{qw/__DIE__ __WARN__/} = @SIG{qw/__DIE__ __WARN__/};
     my $longmess = sub {
-        my $i = 0;
-        while (my @caller = caller($i)) {
-            if ($i == 0) { print $_[0] }
-            print " $caller[3] called" if $caller[3];
-            print " at $caller[1] line $caller[2]\n";
-            $i++;
+        my $mess = '';
+        my $i = 2;
+        {
+            package DB;
+            while (my @caller = caller($i)) {
+                if ($i == 2) { $mess .= $_[0] }
+                $mess .= "\t";
+                if ($caller[3]) { # subroutine
+                    $mess .= "$caller[3](";
+                    if ($caller[4]) { # has_args
+                        my $j = 0;
+                        for my $arg0 (@DB::args) {
+                            my $arg = $arg0; # copy
+                            if ($j++) { $mess .= ", " }
+                            if (!defined($arg)) { $arg = "undef" }
+                            elsif (ref($arg)) { }
+                            else { $arg =~ s/([\\'])/\\$1/g; $arg = "'$arg'" }
+                            $mess .= $arg;
+                        }
+                    }
+                    $mess .= ") called ";
+                }
+                $mess .= "at $caller[1] line $caller[2]\n";
+                $i++;
+            }
         }
+        $mess;
     };
     $SIG{__DIE__}  = sub { die &$longmess };
     $SIG{__WARN__} = sub { warn &$longmess };
@@ -152,9 +172,10 @@ These embeddable pieces of code are not function declaration:
 
 A very simple and lightweight stacktrace printer which does not require any
 module like L<Carp::Always> or L<Devel::Confess>. This will make every warn() or
-die() print a stack trace. Does not support fancy stuffs that L<Carp> does, e.g.
-Unicode, printing/dumping function arguments, etc. It just shows each level's
-filename/line number/function name.
+die() print a stack trace. Does not support fancy stuffs that the other
+stacktrace printer does, e.g. dumping of complex function arguments, colors,
+etc. It just shows each level's filename/line number/function name with argument
+list.
 
 
 =head1 SEE ALSO
