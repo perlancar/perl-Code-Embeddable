@@ -1,5 +1,11 @@
 Revision history for Code-Embeddable
 
+0.05    2015-06-18 (PERLANCAR)
+
+	- [Removed] Move stacktrace_printer to its own dist
+	  Devel-Confess-Tiny.
+
+
 0.04    2015-06-18 (PERLANCAR)
 
 	- No functional changes.
