@@ -1,4 +1,11 @@
-Revision history for Function-Embeddable
+Revision history for Code-Embeddable
+
+0.03    2015-06-18 (PERLANCAR) (unreleased)
+
+        - Rename module/dist from Function-Embeddable to Code-Embeddable.
+
+        - Add embeddable routine: stacktrace_printer.
+
 
 0.02    2015-06-17 (PERLANCAR)
 

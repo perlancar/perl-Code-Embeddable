@@ -1,4 +1,4 @@
-package Function::Embeddable;
+package Code::Embeddable;
 
 # DATE
 # VERSION
@@ -65,8 +65,31 @@ sub uniq (@) {
 }
 # END_BLOCK: uniq
 
+if (0) { <<'_' }
+# BEGIN_BLOCK: stacktrace_printer
+my %OLD_SIG;
+BEGIN {
+    @OLD_SIG{qw/__DIE__ __WARN__/} = @SIG{qw/__DIE__ __WARN__/};
+    my $longmess = sub {
+        my $i = 0;
+        while (my @caller = caller($i)) {
+            if ($i == 0) { print $_[0] }
+            print " $caller[3] called" if $caller[3];
+            print " at $caller[1] line $caller[2]\n";
+            $i++;
+        }
+    };
+    $SIG{__DIE__}  = sub { die &$longmess };
+    $SIG{__WARN__} = sub { warn &$longmess };
+}
+END {
+    @SIG{qw/__DIE__ __WARN__/} = @OLD_SIG{qw/__DIE__ __WARN__/};
+}
+# END_BLOCK: stacktrace_printer
+_
+
 1;
-#ABSTRACT: Collection of functions that can be embedded e.g. using Dist::Zilla plugin
+#ABSTRACT: Collection of routines that can be embedded e.g. using Dist::Zilla plugin
 
 =head1 SYNOPSIS
 
@@ -74,10 +97,10 @@ In F<dist.ini>:
 
  [InsertBlock::FromModule]
 
-In F<lib/Your/Module.pm> (that wants to embed one or more functions):
+In F<lib/Your/Module.pm> (that wants to embed one or more routines):
 
- # INSERT_BLOCK: Function::Embeddable import
- # INSERT_BLOCK: Function::Embeddable another_func
+ # INSERT_BLOCK: Code::Embeddable import
+ # INSERT_BLOCK: Code::Embeddable another_func
 
 
 =head1 DESCRIPTION
@@ -119,6 +142,20 @@ don't have to load the module.
 
 Just like C<List::MoreUtils>'s C<uniq>, except implemented in pure Perl and you
 don't have to load the module.
+
+
+=head1 ROUTINES
+
+These embeddable pieces of code are not function declaration:
+
+=head2 stacktrace_printer
+
+A very simple and lightweight stacktrace printer which does not require any
+module like L<Carp::Always> or L<Devel::Confess>. This will make every warn() or
+die() print a stack trace. Does not support fancy stuffs that L<Carp> does, e.g.
+Unicode, printing/dumping function arguments, etc. It just shows each level's
+filename/line number/function name.
+
 
 =head1 SEE ALSO
 
