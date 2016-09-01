@@ -65,6 +65,36 @@ sub uniq (@) {
 }
 # END_BLOCK: uniq
 
+# BEGIN_BLOCK: equal2
+sub equal2 {
+    state $require = do { require Scalar::Util };
+
+    # for lack of a better name, currently i name this 'equal2'
+    my ($val1, $val2) = @_;
+
+    # here are the rules:
+    # - if both are undef, 1
+    # - undef equals nothing else
+    # - if both are ref, equal if their refaddr() are equal
+    # - if only one is ref, 0
+    # - if none is ref, compare using eq
+
+    if (defined $val1) {
+        return 0 unless defined $val2;
+        if (ref $val1) {
+            return 0 unless ref $val2;
+            return Scalar::Util::refaddr($val1) eq Scalar::Util::refaddr($val2);
+        } else {
+            return 0 if ref $val2;
+            return $val1 eq $val2;
+        }
+    } else {
+        return 0 if defined $val2;
+        return 1;
+    }
+}
+# END_BLOCK: equal2
+
 1;
 #ABSTRACT: Collection of routines that can be embedded e.g. using Dist::Zilla plugin
 
